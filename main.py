@@ -10,10 +10,10 @@ from sklearn.pipeline import Pipeline
 from sklearn.dummy import DummyRegressor
 
 spotify_data = pd.read_csv("spotify_data.csv")
-
-spotify_data.drop('Unnamed: 0', axis=1, inplace=True)
-X = spotify_data.drop('popularity', axis=1)
-y = spotify_data['popularity']
+sampled_spotify_data = spotify_data.sample(frac=0.1, random_state=42)  
+sampled_spotify_data.drop('Unnamed: 0', axis=1, inplace=True)
+X = sampled_spotify_data.drop('popularity', axis=1)
+y = sampled_spotify_data['popularity']
 
 
 num_features = X.select_dtypes(include=['int64', 'float64']).columns.tolist()
@@ -37,7 +37,7 @@ X_prepared_df = pd.DataFrame(X_prepared.toarray(), columns=column_names)
 X_train, X_test, y_train, y_test = train_test_split(X_prepared_df, y, test_size=0.2, random_state=42)
 
 param_grid = {
-    'hidden_layer_sizes': [(454,606,132), ],
+    'hidden_layer_sizes': [(10,10,10), ],
     'activation': ['logistic', 'relu'],
 }
 
@@ -64,8 +64,8 @@ for mean_score, params in zip(results['mean_test_score'], results['params']):
     r_squared_train = r2_score(y_train, y_train_pred)
     r_squared_test = r2_score(y_test, y_test_pred)
 
-    msle_train = mean_squared_log_error(y_train, y_train_pred)
-    msle_test = mean_squared_log_error(y_test, y_test_pred)
+    #msle_train = mean_squared_log_error(y_train, y_train_pred)
+    #msle_test = mean_squared_log_error(y_test, y_test_pred)
 
     mape_train = np.mean(np.abs((y_train - y_train_pred) / y_train)) * 100
     mape_test = np.mean(np.abs((y_test - y_test_pred) / y_test)) * 100
@@ -84,9 +84,9 @@ for mean_score, params in zip(results['mean_test_score'], results['params']):
     print("-"*30)
     print(f"R-squared Train: {r_squared_train:.3f}")
     print(f"R-squared Test: {r_squared_test:.3f}")
-    print("-"*30)
-    print(f"MSLE Train: {msle_train:.3f}")
-    print(f"MSLE Test: {msle_test:.3f}")
+    #print("-"*30)
+    #print(f"MSLE Train: {msle_train:.3f}")
+    #print(f"MSLE Test: {msle_test:.3f}")
     print("-"*30)
     print(f"MAPE Train: {mape_train:.3f}")
     print(f"MAPE Test: {mape_test:.3f}")
